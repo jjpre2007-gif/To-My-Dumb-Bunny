@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To My Dumb Bunny 🧡🩷</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  overflow: hidden;
+  font-weight: bold;
+  background: linear-gradient(135deg, #FF6A00, pink);
+  position: relative;
+  color: white;
+}
+
+/* Animated floating hearts */
+.heart {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: rgba(255, 182, 193, 0.7);
+  transform: rotate(45deg);
+  animation: float 10s linear infinite;
+  border-radius: 3px;
+  z-index: 0;
+}
+
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: rgba(255, 182, 193, 0.7);
+  border-radius: 50%;
+}
+
+.heart::before { top: -7.5px; left: 0; }
+.heart::after { left: 7.5px; top: 0; }
+
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-50vh) rotate(45deg); opacity: 0; }
+}
+
+/* Pages */
+.page {
+  display: none;
+  height: 100vh;
+  padding: 30px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.page.active { display: flex; }
+
+.textbox {
+  background: rgba(255,255,255,0.25);
+  border-radius: 25px;
+  padding: 40px 30px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  position: relative;
+  z-index: 10;
+}
+
+h1 { font-size: 3.5em; margin-bottom: 25px; font-weight: bold; }
+h2 { font-size: 3em; margin-bottom: 20px; font-weight: bold; }
+p { font-size: 2em; line-height: 1.6; font-weight: bold; }
+
+/* Navigation buttons */
+.next-btn {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(255,255,255,0.9);
+  color: #ff2f92;
+  border: none;
+  border-radius: 30px;
+  padding: 16px 26px;
+  font-size: 1.2em;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Valentine buttons */
+.buttons {
+  margin-top: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.choice {
+  padding: 18px 30px;
+  font-size: 1.2em;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#yesBtn { background: #F4BB44; color: #000; }
+#noBtn { background: #FFB6C1; color: #000; }
+
+#message { margin-top: 25px; font-size: 1.6em; }
+
+/* Fireworks particles */
+.firework {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F4BB44;
+  z-index: 5;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  animation: fall 3s linear;
+  z-index: 5;
+}
+
+@keyframes fall {
+  from { transform: translateY(-100vh); }
+  to { transform: translateY(100vh); }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page active" id="page1">
+  <div class="textbox">
+    <h1>Hi My Love,</h1>
+    <p>We may not be able to see each other in person but that does not mean I can’t put in any effort, nor does it mean my love for you will change. I want you to know that I love you very much.</p>
+  </div>
+  <button class="next-btn" onclick="nextPage(2)">Next page🤭</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+  <div class="textbox">
+    <p>You are a wonderful experience and one I want to continue experiencing. You make my days lighter just by being in them. Your laugh, smile, and the way you think is so alluring in a way I can ever explain.</p>
+  </div>
+  <button class="next-btn" onclick="nextPage(3)">Next page😝</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+  <div class="textbox">
+    <h2>So I wanted to ask you…</h2>
+  </div>
+  <button class="next-btn" onclick="nextPage(4)">Next page🫣</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="page4">
+  <div class="textbox">
+    <h1>🧡🩷🧡</h1>
+    <h1>WILL YOU BE MY VALENTINE!!!</h1>
+    <div class="buttons">
+      <button id="yesBtn" class="choice" onclick="sayYes()">Yes Absolutely!!! 🩷</button>
+      <button id="noBtn" class="choice" onclick="sayNo()">Eww No🫩</button>
+    </div>
+    <div id="message"></div>
+  </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" id="page5">
+  <div class="textbox">
+    <p>Thank you My Angel… for choosing me to be your Valentine and for letting me stay with you. It means more to me than you know, and I don’t take it lightly. I’m grateful for you, for us, and for every moment we have shared and will get to share together…<br><br>Love, Always…<br>Your Sly Fox💜</p>
+  </div>
+</div>
+
+<script>
+let noClicks = 0;
+let fireworksPlayed = false;
+let hearts = [];
+
+// -------------------- PAGE NAVIGATION --------------------
+function nextPage(num) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page' + num).classList.add('active');
+
+  // Play fireworks/confetti once on page 4
+  if(num===4 && !fireworksPlayed){
+    startFireworksOnce();
+    launchConfettiOnce();
+    fireworksPlayed = true;
+  }
+}
+
+// -------------------- YES / NO BUTTONS --------------------
+function sayYes(){
+  nextPage(5);
+}
+
+function sayNo(){
+  const noBtn = document.getElementById("noBtn");
+  const msg = document.getElementById("message");
+  noClicks++;
+  if(noClicks===1) msg.innerHTML = "Try again?";
+  else if(noClicks===2) msg.innerHTML = "Wrong answer";
+  else if(noClicks===3) msg.innerHTML = "Again wrong answer lol";
+  else {
+    noBtn.style.position = "fixed";
+    noBtn.style.left = Math.random()*(window.innerWidth - noBtn.offsetWidth)+"px";
+    noBtn.style.top = Math.random()*(window.innerHeight - noBtn.offsetHeight)+"px";
+  }
+}
+
+// -------------------- FIREWORKS (PLAY ONCE) --------------------
+function startFireworksOnce(){
+  const textbox=document.querySelector('.page.active .textbox').getBoundingClientRect();
+  for(let i=0;i<30;i++){
+    const f=document.createElement("div");
+    f.className="firework";
+    let x,y;
+    do{
+      x=Math.random()*window.innerWidth;
+      y=Math.random()*window.innerHeight;
+    }while(x>textbox.left && x<textbox.right && y>textbox.top && y<textbox.bottom);
+    f.style.left=x+"px";
+    f.style.top=y+"px";
+    const angle=Math.random()*2*Math.PI;
+    const distance=50+Math.random()*50;
+    f.animate([{transform:`translate(0,0)`},{transform:`translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)`}],{duration:1200,easing:'ease-out'});
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1200);
+  }
+}
+
+// -------------------- CONFETTI (PLAY ONCE) --------------------
+function launchConfettiOnce(){
+  for(let i=0;i<60;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=Math.random()>0.5?"#F4BB44":"#FFB6C1";
+    c.style.animationDuration="3s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000); // remove after animation ends
+  }
+}
+
+// -------------------- HEARTS --------------------
+function createHearts(){
+  for(let i=0;i<30;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.style.left=Math.random()*100+"vw";
+    h.style.top=Math.random()*100+"vh";
+    h.style.animationDuration=(5+Math.random()*5)+"s";
+    document.body.appendChild(h);
+    hearts.push(h);
+  }
+}
+createHearts();
+</script>
+</body>
+</html>
